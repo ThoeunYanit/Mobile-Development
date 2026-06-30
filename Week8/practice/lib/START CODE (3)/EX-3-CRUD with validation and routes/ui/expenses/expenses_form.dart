@@ -1,0 +1,124 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import '../../models/expense.dart';
+
+class ExpenseForm extends StatefulWidget {
+  const ExpenseForm({super.key});
+
+  @override
+  State<ExpenseForm> createState() => _ExpenseFormState();
+}
+
+class _ExpenseFormState extends State<ExpenseForm> {
+  final _titleController = TextEditingController();
+  final _amountController = TextEditingController();
+
+  // void onCheckPressed() {
+  //   String title = _titleController.text;
+  //   double amount = double.parse(_amountController.text);
+
+  //   Expense newExpense = Expense(
+  //     amount: amount,
+  //     title: title,
+  //     category: Category.food,
+  //     date: DateTime.now(),
+  //   );
+
+  //   Navigator.pop<Expense>(context, newExpense);
+  // }
+
+  void onCheckPressed() {
+    String title = _titleController.text;
+    double? amount = double.tryParse(_amountController.text);
+
+    // since amount can be empty after clicking save so we need to use return here to stop function
+    if (amount == null) {
+      return;
+    }
+
+    Expense newExpense = Expense(
+      amount: amount,
+      title: title,
+      category: Category.food,
+      date: DateTime.now(),
+    );
+
+    Navigator.pop<Expense>(context, newExpense);
+  }
+
+  void onCancelPressed() {
+    Navigator.pop(context);
+  }
+
+  String? quantityError(String quantityValue) {
+    int? value = int.tryParse(quantityValue);
+
+    if (value == null) {
+      return null;
+    }
+
+    if (value < 0 || value > 100) {
+      return 'Please enter a number between 0 to 100';
+    }
+
+    return null;
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _amountController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Add a new item')),
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _titleController,
+              maxLength: 50,
+              decoration: const InputDecoration(label: Text('Title')),
+            ),
+
+            SizedBox(height: 20),
+            TextField(
+              onChanged: (value) {
+                setState(() {}); // to rebuild ui everytime user typing
+              },
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly,
+              ],
+              controller: _amountController,
+              maxLength: 50,
+              decoration: InputDecoration(
+                prefix: Text("\$"),
+                label: const Text('Amount'),
+                errorText: quantityError(_amountController.text), // amount during typing
+              ),
+            ),
+
+            Spacer(),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: onCancelPressed,
+                  child: Text("Cancel"),
+                ),
+                ElevatedButton(onPressed: onCheckPressed, child: Text("Save")),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
