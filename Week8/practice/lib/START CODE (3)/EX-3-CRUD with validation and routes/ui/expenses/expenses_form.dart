@@ -37,6 +37,11 @@ class _ExpenseFormState extends State<ExpenseForm> {
       return;
     }
 
+    // since amount cannot be bigger than 100 or smaller than 0 after clicking save so we need to use return here to stop function
+    if (amount > 100 || amount < 0) {
+      return;
+    }
+
     Expense newExpense = Expense(
       amount: amount,
       title: title,
@@ -100,7 +105,9 @@ class _ExpenseFormState extends State<ExpenseForm> {
               decoration: InputDecoration(
                 prefix: Text("\$"),
                 label: const Text('Amount'),
-                errorText: quantityError(_amountController.text), // amount during typing
+                errorText: quantityError(
+                  _amountController.text,
+                ), // amount during typing
               ),
             ),
 
