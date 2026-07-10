@@ -10,8 +10,17 @@ class TodoDto {
   static Todo fromJson(String id, Map<String, dynamic> json) {
     // Assert the map contains the keys  title and completed with the right data types
 
+    assert(json[title] is String);
+    assert(json[completed] is bool);
+
     // Return the right todo object by reading the json map
-    return Todo(id: "fake", title: "fake", completed: false);
+    // return Todo(id: "fake", title: "fake", completed: false);
+
+    String titleValue = json[title];
+
+    bool completedValue = json[completed];
+
+    return Todo(id: id, title: titleValue, completed: completedValue);
   }
 
   static Map<String, dynamic> toJson(Todo todo) {
@@ -48,4 +57,13 @@ void main() {
 
     return TodoDto.fromJson(id, json);
   }).toList();
+
+  // simulate , convert JSON data into a Todo object
+  /*Instance of 'Todo'
+    Instance of 'Todo'
+    Instance of 'Todo'
+  */
+  for (var i in todos) {
+    print(i);
+  }
 }

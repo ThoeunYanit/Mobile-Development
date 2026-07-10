@@ -72,8 +72,9 @@ class _ButtonScreenState extends State<ButtonScreen> {
               button = ButtonStatus(
                 name: button!.name,
 
-                selected: button!.selected,
+                selected: !button!.selected,
               );
+              ButtonRepository.instance.updateSelectedStatus(button!.selected);
             });
           },
         );

@@ -1,4 +1,5 @@
 import 'dart:convert' as convert;
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart';
@@ -41,4 +42,22 @@ class ButtonRepository {
       throw RepositoryException('Unexpected error: $e'); //catch general exception
     }
   }
+
+  Future<void> updateSelectedStatus(bool newStatus) async {
+    Uri url = Uri.parse(
+      'https://week9-eacdb-default-rtdb.asia-southeast1.firebasedatabase.app/button/button01.json',
+    );
+    Response response = await http.patch(
+      url,
+      body: json.encode({'selected': newStatus}),
+    );
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update');
+    }
+  }
+
+
 }
+
+  
+

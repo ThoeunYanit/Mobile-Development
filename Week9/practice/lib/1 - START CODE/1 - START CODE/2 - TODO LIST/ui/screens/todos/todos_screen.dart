@@ -36,6 +36,15 @@ class _TodosScreenState extends State<TodosScreen> {
 
     // List<Todo> todos = await repository.getTodos();
     // setState(() => asyncData = AsyncData.success(todos),);
+
+    List<Todo> todos = await repository.getTodos();
+    setState(() => asyncData = AsyncData.loading());
+
+    try {
+      setState(() => asyncData = AsyncData.success(todos));
+    } on RepositoryException catch (e) {
+      throw Exception(e.message);
+    }
   }
 
   void onUpdateCompleted(Todo todo) async {
@@ -47,6 +56,13 @@ class _TodosScreenState extends State<TodosScreen> {
     // Update the widget state (asyncData)
 
     // ! we dont reload the full list, we update directly the modified Todo in the cache (asyncData)
+    try {
+      await repository.updateCompleted(todo.id, !todo.completed); // !todo.completed to change the state of completed from true to false or false to true
+      _fetchTodos(); // to rebuild ui // Since I am not sure with caching, I will use _fetchTodos to reload everyhting like a fresh start
+   
+    } on RepositoryException {
+      throw Exception('Update fails');
+    }
   }
 
   Widget get content => switch (asyncData.status) {
