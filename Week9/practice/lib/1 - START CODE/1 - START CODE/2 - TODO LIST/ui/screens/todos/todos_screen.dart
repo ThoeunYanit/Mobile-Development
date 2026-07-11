@@ -57,9 +57,17 @@ class _TodosScreenState extends State<TodosScreen> {
 
     // ! we dont reload the full list, we update directly the modified Todo in the cache (asyncData)
     try {
-      await repository.updateCompleted(todo.id, !todo.completed); // !todo.completed to change the state of completed from true to false or false to true
-      _fetchTodos(); // to rebuild ui // Since I am not sure with caching, I will use _fetchTodos to reload everyhting like a fresh start
-   
+      await repository.updateCompleted(todo.id,!todo.completed); // !todo.completed to change the state of completed from true to false or false to true
+      // _fetchTodos(); // to rebuild ui // Since I am not sure with caching, I will use _fetchTodos to reload everyhting like a fresh start
+      
+      setState(() {
+        
+        var todos = asyncData.value!; //assign todos with list of todo (asyncData.value) 
+        int index = todos.indexWhere((e) => e.id == todo.id); // loop into the list (todos) to compare id of argument with id of value of index
+        todos[index] = todos[index].copyWith(!todo.completed); // change the value that matches in the list with the argument
+    
+      });
+
     } on RepositoryException {
       throw Exception('Update fails');
     }
