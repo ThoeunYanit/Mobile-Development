@@ -21,9 +21,38 @@ class _AuthScreenState extends State<AuthScreen> {
   void onLoginPressed() async {
     // Wrap all the code with a try/catch on AuthException: if exception, disaplyer error with the exception
     try {
-      await AuthenticationService.instance.login(name: 'john', password: '1234');
+      // Get the name + password from controllers
+      String name = nameController.text;
+      String password = passwordController.text;
+
+      // Validate the name+password => if empty display error :  "Name and password shall be entered"
+      if (name.isEmpty || password.isEmpty) {
+        setState(() {
+          errorMessage = "Name and password shall be entered";
+        });
+        return;
+      }
+
+      // Call AuthenticationService instance to login
+      await AuthenticationService.instance.login(
+        name: name,
+        password: password,
+      );
+
+      setState(() {
+        errorMessage = null; //clear previous error, otherwise it will remain
+      });
+
+      // Iff success, notify the parent (use the callback) and refresh the state
       widget.onLogin();
-    } on Exception catch (e) {}
+
+      // If failure disaply the error and refresh
+    } on AuthException catch (e) {
+      setState(() {
+        errorMessage = e.message;
+      });
+    }
+    
     // Get the name + password from controllers
 
     // Validate the name+password => if empty display error :  "Name and password shall be entered"

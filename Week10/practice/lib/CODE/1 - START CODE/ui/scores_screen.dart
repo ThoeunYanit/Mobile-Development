@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
- 
+import 'package:practice/CODE/1%20-%20START%20CODE/data/services/auth_service.dart';
+
 import '../model/score.dart';
+import '../data/repositories/scores_repository.dart';
 
 class ScoresScreen extends StatefulWidget {
   const ScoresScreen({super.key});
@@ -16,32 +18,59 @@ class _ScoresScreenState extends State<ScoresScreen> {
   @override
   void initState() {
     super.initState();
- 
+
     fetchSCores();
   }
 
   void fetchSCores() async {
+    // Ask the ScoresRepository instance to fetch the scores
+    scores = await ScoresRepository.instance.getSCores();
+    setState(() {});
 
-    // Ask the ScoresRepository instance to fetch the scores 
-    
+    if (scores == null) {
+      setState(() {
+        error = "Failed to fetch the scores";
+      });
+    }
     // if succes, update the scores list and refresh
     // If failure, update the error and refresh
   }
 
   String? get userName {
-   
     // Ask the AuthenticationService instance the current user nale (if any)
+    if (AuthenticationService.instance.session?.user.name != null) {
+      return AuthenticationService.instance.session?.user.name;
+    }
 
     return null;
   }
 
   Widget get content {
-
     // If scores list => dispaly the list using the ScoreTile
-
+    if (scores != null) {
+      return ListView.builder(
+        itemCount: scores!.length,
+        itemBuilder: (context, index) => ScoreTile(score: scores![index]),
+      );
+    }
+    
     // if error, dispaly the erro in red, centered
+    if (scores == null){
+      return Padding(
+        padding: const EdgeInsets.only(top: 16),
+        child: Center(
+          child: Text(
+            error = 'Fail to show the content',
+            style: const TextStyle(
+              color: Colors.red,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      );
+    }
 
-    // otherwise, we disaply the  CircularProgressIndicator 
+    // otherwise, we disaply the  CircularProgressIndicator
     return CircularProgressIndicator();
   }
 
