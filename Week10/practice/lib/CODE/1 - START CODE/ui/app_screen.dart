@@ -16,12 +16,18 @@ class _AppScreenState extends State<AppScreen> {
     setState(() {});
   }
 
+  void onLogout() {
+    setState(() {
+      AuthenticationService.instance.session = null; //delete session => isLogged = false
+    });
+  }
+
   Widget get content {
     bool isLogged = AuthenticationService.instance.isLoggedIn;
 
     // if logged in -> Display ScoresScreen
     if (isLogged) {
-      return ScoresScreen();
+      return ScoresScreen(onLogout: onLogout);
     }
 
     // otherwise -> DisplayAuthScreen

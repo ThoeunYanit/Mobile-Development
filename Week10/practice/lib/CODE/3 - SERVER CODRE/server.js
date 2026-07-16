@@ -45,13 +45,13 @@ const scores = [
         id: 2,
         userId: 1,
         title: "Dart Exercise",
-        score: 90
+        score: 20
     },
     {
         id: 3,
         userId: 2,
         title: "Flutter Quiz",
-        score: 75
+        score: 50
     },
     {
         id: 4,
